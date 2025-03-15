@@ -32,7 +32,7 @@ def main():
         extract_apk(args.apk_path, args.temp_path)
 
         print('[+] Patching APK...')
-        patch_apk(args.temp_path)
+        patch_apk(args)
 
         print('[+] Compiling APK...')
         compile_apk(args.temp_path, args.output)
