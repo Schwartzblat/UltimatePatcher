@@ -26,3 +26,22 @@ android {
 }
 
 dependencies {}
+
+tasks.whenTaskAdded { task ->
+    if (task.name == 'assembleRelease') {
+        task.doLast {
+            def apkDir = "$buildDir/outputs/apk/release"
+            def apkFile = fileTree(dir: apkDir, includes: ["*.apk"]).singleFile
+            def destinationDir = "./"
+
+            mkdir(destinationDir)
+            copy {
+                from apkFile
+                into "$destinationDir"
+            }
+            def output_apk = file("$destinationDir/${apkFile.name}")
+            output_apk.renameTo("${destinationDir}/smali_generator.apk")
+            println "APK moved to $destinationDir"
+        }
+    }
+}
