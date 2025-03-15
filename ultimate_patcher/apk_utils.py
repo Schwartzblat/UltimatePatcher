@@ -13,7 +13,7 @@ def extract_apk(apk_path: str, output_path: str = './extracted') -> None:
             config.APKTOOL_PATH,
             "-q",
             "d",
-            # "-r",
+            "-r",
             "--output",
             output_path,
             apk_path,

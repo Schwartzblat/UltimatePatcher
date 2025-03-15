@@ -1,4 +1,6 @@
 import argparse
+import shutil
+
 from ultimate_patcher.apk_utils import *
 from ultimate_patcher.patcher import patch_apk
 
@@ -15,21 +17,31 @@ def check_args(args) -> None:
         print('APK file not found')
         exit(1)
 
+def clean_up(args):
+    shutil.rmtree(args.temp_path, ignore_errors=True)
+    shutil.rmtree(config.SMALI_GENERATOR_OUTPUT_PATH, ignore_errors=True)
+    shutil.rmtree(config.SMALI_GENERATOR_SMALI_PATH, ignore_errors=True)
+    shutil.rmtree(config.SMALI_GENERATOR_PATH / 'app' / 'build', ignore_errors=True)
+
 
 def main():
     args = get_args()
     check_args(args)
-    print('[+] Extracting APK...')
-    extract_apk(args.apk_path, args.temp_path)
+    try:
+        print('[+] Extracting APK...')
+        extract_apk(args.apk_path, args.temp_path)
 
-    print('[+] Patching APK...')
-    patch_apk(args.temp_path)
+        print('[+] Patching APK...')
+        patch_apk(args.temp_path)
 
-    print('[+] Compiling APK...')
-    compile_apk(args.temp_path, args.output)
+        print('[+] Compiling APK...')
+        compile_apk(args.temp_path, args.output)
 
-    print('[+] Signing APK...')
-    sign_apk(args.output)
+        print('[+] Signing APK...')
+        sign_apk(args.output)
+    finally:
+        print('[+] Cleaning up...')
+        clean_up(args)
 
 if __name__ == '__main__':
     main()
