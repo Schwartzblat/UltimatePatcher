@@ -26,7 +26,7 @@ android {
 }
 
 dependencies {
-    implementation 'io.github.pagalaxylab:yahfa:0.10.0'
+    implementation libs.yahfa
 }
 
 tasks.whenTaskAdded { task ->
