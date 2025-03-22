@@ -11,26 +11,24 @@ import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import lab.galaxy.yahfa.HookMain;
 
-interface CallableVoidOneParameter<T> {
-    void call(T t);
-}
-
-interface CallableVoidOneParameterBundle {
-    boolean call(View view, MotionEvent motionEvent);
-}
 
 @SuppressWarnings("unused")
 public class TheAmazingPatch {
-    static {
-        System.loadLibrary("ultimate-patcher");
-    }
-    public static native int hook_method(String class_name, String method_name, String method_signature, Object callback);
-    public static native int revert_hook_method(String class_name, String method_name, String method_signature);
-
-
-    static CallableVoidOneParameterBundle bundle_callable;
     static AtomicBoolean is_loaded = new AtomicBoolean(false);
+
+    static boolean on_touch_hook(Activity activity, View view, MotionEvent motionEvent) {
+        Log.e("PATCH", "MainActivity.onTouch called: " + activity.toString() + ", "  + view.toString() +", " + motionEvent.toString());
+        boolean ret = TheAmazingPatch.on_touch_hook_backup(activity, view, motionEvent);
+        Log.e("PATCH", "MainActivity.onTouch returned: " + ret);
+        return ret;
+    }
+
+    static boolean on_touch_hook_backup(Activity activity, View view, MotionEvent motionEvent) {
+        return true;
+    }
+
     public static void on_load() {
         if (is_loaded.getAndSet(true)) {
             return;
@@ -38,21 +36,9 @@ public class TheAmazingPatch {
         Log.e("PATCH", "Patch loaded");
         try {
             Class<?> main_activity = Class.forName("com.androbaby.original2048.MainActivity");
-            Method onTouch = main_activity.getMethod("onTouch", View.class, MotionEvent.class);
-            hook_method("com/androbaby/original2048/MainActivity", "onTouch", "(Landroid/view/View;Landroid/view/MotionEvent;)Z", bundle_callable = (view, motionEvent) -> {
-                Log.e("PATCH", "MainActivity.onTouch called: " + view.toString() + ", " + motionEvent.toString());
-                revert_hook_method("com/androbaby/original2048/MainActivity", "onTouch", "(Landroid/view/View;Landroid/view/MotionEvent;)Z");
-//                boolean ret = TheAmazingPatch.bundle_callable.call(view, motionEvent);
-                Display ret = null;
-                try {
-                    ret = (Display) onTouch.invoke(main_activity, view, motionEvent);
-                } catch (Exception e) {
-                    Log.e("PATCH", "Error inside: " + e.getMessage());
-                }
-                revert_hook_method("com/androbaby/original2048/MainActivity", "onTouch", "(Landroid/view/View;Landroid/view/MotionEvent;)Z");
-                Log.e("PATCH", "MainActivity.onTouch returned: " + ret);
-                return false;
-            });
+            Method on_touch_hook_method = TheAmazingPatch.class.getDeclaredMethod("on_touch_hook", Activity.class, View.class, MotionEvent.class);
+            Method on_touch_backup_method = TheAmazingPatch.class.getDeclaredMethod("on_touch_hook_backup", Activity.class, View.class, MotionEvent.class);
+            HookMain.findAndBackupAndHook(main_activity, "onTouch", "(Landroid/view/View;Landroid/view/MotionEvent;)Z", on_touch_hook_method, on_touch_backup_method);
         } catch (Exception e) {
             Log.e("PATCH", "Error: " + e.getMessage());
         }
