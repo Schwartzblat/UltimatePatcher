@@ -11,6 +11,7 @@ def get_args():
     parser.add_argument('-o', '--output', dest='output', help='Output APK path', required=False, default='output.apk')
     parser.add_argument('-t', '--temp', dest='temp_path', help='Temp path for extracted content', required=False,
                         default='./extracted')
+    parser.add_argument('--arch', dest='arch', help='Architecture', required=False, default='arm64-v8a', choices=['arm64-v8a', 'armeabi-v7a' ,'x86', 'x86_64'])
     return parser.parse_args()
 
 

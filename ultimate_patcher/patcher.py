@@ -68,5 +68,9 @@ def patch_apk(args) -> None:
     print('[+] Applying the custom smali...')
     shutil.copytree(config.SMALI_GENERATOR_SMALI_PATH / 'smali', pathlib.Path(args.temp_path) / 'smali',
                     dirs_exist_ok=True)
+    print('[+] Injecting the custom so...')
+    os.makedirs(pathlib.Path(args.temp_path) / 'lib' / args.arch, exist_ok=True)
+    shutil.copytree(config.SMALI_GENERATOR_SMALI_PATH / 'lib' / args.arch, pathlib.Path(args.temp_path) / 'lib' / args.arch,
+                    dirs_exist_ok=True)
     print('[+] Adding calls to the custom smali...')
     patch_entries(args)
