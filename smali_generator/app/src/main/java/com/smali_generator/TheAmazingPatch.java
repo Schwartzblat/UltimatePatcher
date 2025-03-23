@@ -46,7 +46,7 @@ public class TheAmazingPatch {
         if (is_loaded.getAndSet(true)) {
             return;
         }
-        Log.e("PATCH", "Patch loaded");
+        Log.e("PATCH", "Patch loaded, {{SOME_CONST_KEY}}");
         try {
             Class<?> main_activity = Class.forName("X.Dq4");
             Method decrypt_protobuf_hook_method = TheAmazingPatch.class.getDeclaredMethod("decrypt_protobuf_hook", Object.class, Object.class, Object.class, byte[].class, int.class, int.class, int.class);
