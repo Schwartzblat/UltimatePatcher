@@ -1,12 +1,15 @@
 import glob
 import json
+import os
 import pathlib
 import re
 import shutil
+import subprocess
 import lxml.etree
 from androguard.core.apk import APK
 from androguard.util import set_log
-from ultimate_patcher.apk_utils import *
+from ultimate_patcher import config
+from ultimate_patcher.apk_utils import find_smali_file_by_class_name, extract_apk
 from ultimate_patcher.config import ManifestKeys
 
 set_log('CRITICAL')

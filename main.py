@@ -1,7 +1,9 @@
 import argparse
 import shutil
-
-from ultimate_patcher.apk_utils import *
+import os
+import pathlib
+from ultimate_patcher import config
+from ultimate_patcher.apk_utils import extract_apk, compile_apk, sign_apk
 from artifactory import prepare_artifactory
 from ultimate_patcher.patcher import patch_apk
 

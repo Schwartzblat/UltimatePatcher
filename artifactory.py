@@ -1,6 +1,4 @@
-import glob
 import json
-import os
 import pathlib
 from artifactory_generator.generate_artifactory import generate_artifactory
 
